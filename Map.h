@@ -8,6 +8,7 @@ class Map {
 public:
 	void generate_map(int width, int height);
 protected:
+	void create_rooms();
 	void create_room(int x_pos, int y_pos, int width, int height);
 private:
 	Tile ** map_tiles;
