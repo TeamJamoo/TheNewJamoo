@@ -1,7 +1,0 @@
-class Game {
-public:
-	void setup();
-protected:
-private:
-	Map gameMap;
-}
