@@ -1,5 +1,5 @@
 //Author: Richard Holgate
-//Last updated: 7/31/2015
+//Last updated: 8/15/2015 by Richard Holgate
 
 #include "Game.h"
 #include "Tile.h"
@@ -8,7 +8,9 @@ class Map {
 public:
 	void generate_map(int width, int height);
 protected:
+	void create_rooms();
 	void create_room(int x_pos, int y_pos, int width, int height);
+	void create_door(int x_pos, int y_pos);
 private:
 	Tile ** map_tiles;
 }
