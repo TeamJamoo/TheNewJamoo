@@ -1,5 +1,5 @@
 //Author: Richard Holgate
-//Last Updated: 8/17/2015 by Richard Holgate
+//Last Updated: 8/18/2015 by Richard Holgate
 
 #include "map.h"
 #include <stdlib.h> //rand and srand
@@ -14,18 +14,17 @@ void Map::generate_map(int width, int height)
 		map_tiles[i] = Tile[height];
 	}
 
-	//create the first room
-	this.create_rooms();
+	//create the first room with default beginning coordinates
+	this.create_rooms(1, 1, 3, 3);
 }
 
-void Map::create_rooms()
+//recursively create all the rooms
+void Map::create_rooms(int x_pos, int y_pos, int width, int height, int direction)
 {
-	//the x and y of the room being generated
-	int room_x_pos = 1;
-	int room_y_pos = 1;
-	//height and width of basic room
-	int height = 3;
-	int width = 3;
+	//check if the map is full, and if so, return
+	if(!valid_pos_remains())
+		return;
+
 	//the position of the door
 	int door_x_pos;
 	int door_y_pos;
@@ -37,11 +36,14 @@ void Map::create_rooms()
 	//generate random seed
 	srand(time(NULL));
 
-	//continue making rooms until there's no positions left and the map is full
-	while(valid_pos_remain) {
-		//create a room
-		create_room(room_x_pos,room_y_pos,3,3);
+	//insert the room into the map
+	insert_room(room_x_pos,room_y_pos,3,3);
+	
+	//whether the currently generated room is valid
+	bool current_pos_valid = false;
 
+	//loop until a next door and room are succesfully prepared
+	while (!current_pos_valid) {
 		//choose a random tile for a door to be placed between 1 and 4
 		door_side = rand() % 4 + 1;
 
@@ -68,15 +70,9 @@ void Map::create_rooms()
 
 		}
 
-		//create the door
-		create_door(door_x_pos, door_y_pos);
-
 		//determine the coordinates of the next room to be made
 		room_x_pos = gen_room_x(door_side, door_x_pos);
 		room_y_pos = gen_room_y(door_side, door_y_pos);
-
-		//see if there's still a valid position remaining
-		check_valid_pos_remains();
 	}
 }
 

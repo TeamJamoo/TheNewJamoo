@@ -11,6 +11,9 @@ protected:
 	void create_rooms();
 	void create_room(int x_pos, int y_pos, int width, int height);
 	void create_door(int x_pos, int y_pos);
+	int  gen_room_x(int door_side, int door_x);
+	int  gen_room_y(int door_side, int door_x);
+	void check_valid_pos_remains();
 private:
 	Tile ** map_tiles;
 }
