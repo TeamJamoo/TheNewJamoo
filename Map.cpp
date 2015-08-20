@@ -6,7 +6,8 @@
 #include <time.h> //time
 
 //default room size (until made random later
-#define ROOM_SIZE 3
+#define ROOM_SIZE 3 //TODO - seperate into ROOM_WIDTH and ROOM_HEIGHT
+		    //TODO - eventually completely randomize
 
 void Map::generate_map(int width, int height)
 {
@@ -37,19 +38,17 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 	srand(time(NULL));
 
 	//insert the room into the map
-	insert_room(room_x_pos, room_y_pos, width, height); //TODO
+	insert_room(room_x_pos, room_y_pos, width, height); 
 
 	//check if the map is full, and if so, return
 	if(!valid_pos_remains()) //TODO
 		return;
 
-	//whether the currently generated room is valid
-	bool current_pos_valid = false;
+	//the currently generated room is valid unless set otherwise
+	bool current_pos_valid = true;
 
 	//loop until a next door and room are succesfully prepared
-	while (!current_pos_valid) {
-		//the current position is valid until found to be invalid
-		current_pos_valid = true;
+	do {
 		//choose a random tile for a door to be placed between 1 and 4
 		door_side = rand() % 4 + 1;
 
@@ -81,7 +80,8 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 		//if a valid position isn't found, loop
 		room_x_pos = gen_room_x(door_side, door_x_pos);
 		room_y_pos = gen_room_y(door_side, door_y_pos);
-	} //end while loop
+
+	} while(!current_pos_valid);
 
 	//once out of the loop, that means a valid door and room position were found
 	//time to create the door, and loop again to create the next room
@@ -120,7 +120,32 @@ void Map::insert_door(int x_pos, int y_pos)
 //if a valid position isn't found, set current_pos_valid to false
 int Map::gen_room_x(int door_side, int door_x)
 {
+	//room is valid until set otherwise
+	bool room_valid = true;
+	//loop until a valid room is found. If there aren't any, set current_pos_valid to false, and return -1
+	do {
+		//the placement of the room depends on the direction of the door
+		//(1 = left, 2 = top, 3 = right, 4 = bottom)
 
-	
+		if (door_side == 1) {
+			//door on the left side, x position is fixed
+			return door_x - ROOM_SIZE;		
+		} else 
+		if (door_side == 2) {
+			//door on the top side, room-x can been door-x +/- (room_size-1)
+			return (rand() % ((ROOM_SIZE * 2)-1)) + door_x - (ROOM_SIZE-1);
+		} else
+		if (door_side == 3) {
+			//door on the left side, x position if fixed
+			return door_x + 1;
+		} else
+		if (door_side == 4) {
+			//door on the bottom side, same equation as top side
+			return (rand() % ((ROOM_SIZE * 2)-1)) + door_x - (ROOM_SIZE-1);
+		}
 
+		//Check the validity of the given room coordinates
+		//TODO
+
+	} while (!room_valid);
 }

@@ -1,5 +1,5 @@
 //Author: Richard Holgate
-//Last updated: 8/19/2015 by Richard Holgate
+//Last updated: 8/20/2015 by Richard Holgate
 
 #include "Game.h"
 #include "Tile.h"

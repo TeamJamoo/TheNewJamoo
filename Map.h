@@ -16,4 +16,5 @@ protected:
 	bool valid_pos_remains();
 private:
 	Tile ** map_tiles;
+	bool current_pos_valid;
 }
