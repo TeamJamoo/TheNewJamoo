@@ -1,5 +1,5 @@
 //Author: Richard Holgate
-//Last Updated: 8/18/2015 by Richard Holgate
+//Last Updated: 8/19/2015 by Richard Holgate
 
 #include "map.h"
 #include <stdlib.h> //rand and srand
@@ -20,11 +20,7 @@ void Map::generate_map(int width, int height)
 
 //recursively create all the rooms
 void Map::create_rooms(int x_pos, int y_pos, int width, int height, int direction)
-{
-	//check if the map is full, and if so, return
-	if(!valid_pos_remains())
-		return;
-
+{	
 	//the position of the door
 	int door_x_pos;
 	int door_y_pos;
@@ -37,8 +33,12 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 	srand(time(NULL));
 
 	//insert the room into the map
-	insert_room(room_x_pos,room_y_pos,3,3);
-	
+	insert_room(room_x_pos,room_y_pos,3,3); //TODO
+
+	//check if the map is full, and if so, return
+	if(!valid_pos_remains()) //TODO
+		return;
+
 	//whether the currently generated room is valid
 	bool current_pos_valid = false;
 
@@ -71,13 +71,21 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 		}
 
 		//determine the coordinates of the next room to be made
+		//if a valid position is found, set current_pos_valid to true
+		//if a valid position isn't found, loop
 		room_x_pos = gen_room_x(door_side, door_x_pos);
 		room_y_pos = gen_room_y(door_side, door_y_pos);
-	}
+	} //end while loop
+
+	//once out of the loop, that means a valid door and room position were found
+	//time to create the door, and loop again to create the next room
+	insert_door(door_x_pos, door_y_pos);
+	//next recursive step
+	create_rooms(room_x_pos, room_y_pos, 3, 3, door_side);
 }
 
-//create a single room on the map
-void Map::create_room(int x_pos, int y_pos, int width, int height) {
+//add the tiles for a single room on the map
+void Map::insert_room(int x_pos, int y_pos, int width, int height) {
 
 
 }
