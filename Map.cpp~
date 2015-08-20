@@ -71,11 +71,11 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 		}
 
 		//determine the coordinates of the next room to be made
-		//if a valid position is found, set the current position to valid
+		//if a valid position is found, set current_pos_valid to true
 		//if a valid position isn't found, loop
 		room_x_pos = gen_room_x(door_side, door_x_pos);
 		room_y_pos = gen_room_y(door_side, door_y_pos);
-	}
+	} //end while loop
 
 	//once out of the loop, that means a valid door and room position were found
 	//time to create the door, and loop again to create the next room

@@ -13,6 +13,7 @@ protected:
 	void insert_door(int x_pos, int y_pos);
 	int  gen_room_x(int door_side, int door_x);
 	int  gen_room_y(int door_side, int door_x);
+	bool valid_pos_remains();
 private:
 	Tile ** map_tiles;
 }

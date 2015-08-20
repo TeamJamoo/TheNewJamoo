@@ -1,9 +1,12 @@
 //Author: Richard Holgate
-//Last Updated: 8/19/2015 by Richard Holgate
+//Last Updated: 8/20/2015 by Richard Holgate
 
 #include "map.h"
 #include <stdlib.h> //rand and srand
 #include <time.h> //time
+
+//default room size (until made random later
+#define ROOM_SIZE 3
 
 void Map::generate_map(int width, int height)
 {
@@ -15,25 +18,26 @@ void Map::generate_map(int width, int height)
 	}
 
 	//create the first room with default beginning coordinates
-	this.create_rooms(1, 1, 3, 3);
+	this.create_rooms(1, 1, ROOM_SIZE, ROOM_SIZE);
 }
 
 //recursively create all the rooms
 void Map::create_rooms(int x_pos, int y_pos, int width, int height, int direction)
 {	
+	//the position of the room
+	int room_x_pos = x_pos;
+	int room_y_pos = y_pos;
 	//the position of the door
 	int door_x_pos;
-	int door_y_pos;
-	
+	int door_y_pos;	
 	//which side of the room the current door is being generated on
 	//(1 = left, 2 = top, 3 = right, 4 = bottom)
 	int door_side;
-
 	//generate random seed
 	srand(time(NULL));
 
 	//insert the room into the map
-	insert_room(room_x_pos,room_y_pos,3,3); //TODO
+	insert_room(room_x_pos, room_y_pos, width, height); //TODO
 
 	//check if the map is full, and if so, return
 	if(!valid_pos_remains()) //TODO
@@ -44,6 +48,8 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 
 	//loop until a next door and room are succesfully prepared
 	while (!current_pos_valid) {
+		//the current position is valid until found to be invalid
+		current_pos_valid = true;
 		//choose a random tile for a door to be placed between 1 and 4
 		door_side = rand() % 4 + 1;
 
@@ -81,11 +87,40 @@ void Map::create_rooms(int x_pos, int y_pos, int width, int height, int directio
 	//time to create the door, and loop again to create the next room
 	insert_door(door_x_pos, door_y_pos);
 	//next recursive step
-	create_rooms(room_x_pos, room_y_pos, 3, 3, door_side);
+	create_rooms(room_x_pos, room_y_pos, ROOM_SIZE, ROOM_SIZE, door_side);
 }
 
-//add the tiles for a single room on the map
-void Map::insert_room(int x_pos, int y_pos, int width, int height) {
 
+
+//add the tiles for a single room on the map
+void Map::insert_room(int x_pos, int y_pos, int width, int height)
+{
+	for (int i = x_pos, i < x_pos+width; ++i)
+	{
+		for (int j = y_pos, j < y_pos+height; ++i)
+		{
+		//add a floor tile for each space in the room
+		map_tiles[i][j] = new floor_tile();
+
+		}
+	}
+}
+
+
+
+//add a door tile to the given position
+void Map::insert_door(int x_pos, int y_pos)
+{
+	map_tiles[x_pos][y_pos] = new door_tile();
+}
+
+
+
+//find a valid x-position for the next room to be made.
+//if a valid position isn't found, set current_pos_valid to false
+int Map::gen_room_x(int door_side, int door_x)
+{
+
+	
 
 }
