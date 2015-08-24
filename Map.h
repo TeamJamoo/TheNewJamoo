@@ -1,20 +1,23 @@
 //Author: Richard Holgate
-//Last updated: 8/20/2015 by Richard Holgate
+//Last updated: 8/22/2015 by Richard Holgate
 
-#include "Game.h"
+#ifndef _MAP
+#define _MAP
+
 #include "Tile.h"
 
-class Map {
+class Map
+{
 public:
 	void generate_map(int width, int height);
 protected:
-	void create_rooms(int x_pos, int y_pos, int width, int height, int direction);
+	void create_rooms(int room_x, int room_y, int room_width, int room_height);
 	void insert_room(int x_pos, int y_pos, int width, int height);
-	void insert_door(int x_pos, int y_pos);
-	int  gen_room_x(int door_side, int door_x);
-	int  gen_room_y(int door_side, int door_x);
+	bool tile_empty(int tile_x, int tile_y);
+	bool room_is_valid(int room_x, int room_y, int room_width, int room_height);
 	bool valid_pos_remains();
 private:
-	Tile ** map_tiles;
-	bool current_pos_valid;
-}
+	Tile *** map_tiles;
+};
+
+#endif

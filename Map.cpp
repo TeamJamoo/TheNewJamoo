@@ -1,151 +1,289 @@
 //Author: Richard Holgate
-//Last Updated: 8/20/2015 by Richard Holgate
+//Last Updated: 8/22/2015 by Richard Holgate
 
-#include "map.h"
+#include "Map.h"
+#include "Tile.h"
+#include "Floor_Tile.h"
+#include "Door_Node.h"
 #include <stdlib.h> //rand and srand
 #include <time.h> //time
+#include <vector> //vector<class_type>
 
 //default room size (until made random later
-#define ROOM_SIZE 3 //TODO - seperate into ROOM_WIDTH and ROOM_HEIGHT
-		    //TODO - eventually completely randomize
+#define ROOM_WIDTH 3
+#define ROOM_HEIGHT 3
+//TODO - eventually completely randomize
 
+
+
+//DESCRIPTION: generate the map
+//INPUT: the width and height of the map to be generated
+//EFFECT: creates and fills a 2D array of tiles that represent the map
+//OUTPUT: none
 void Map::generate_map(int width, int height)
 {
 	//create empty map
-	map_tiles = new Tile*[width];
+	map_tiles = new Tile**[width];
 	for (int i = 0; i < width; ++i)
 	{
-		map_tiles[i] = Tile[height];
+		map_tiles[i] = new Tile*[height];
 	}
 
 	//create the first room with default beginning coordinates
-	this.create_rooms(1, 1, ROOM_SIZE, ROOM_SIZE);
+	create_rooms(1, 1, ROOM_WIDTH, ROOM_HEIGHT);
 }
 
-//recursively create all the rooms
-void Map::create_rooms(int x_pos, int y_pos, int width, int height, int direction)
-{	
-	//the position of the room
-	int room_x_pos = x_pos;
-	int room_y_pos = y_pos;
-	//the position of the door
-	int door_x_pos;
-	int door_y_pos;	
-	//which side of the room the current door is being generated on
-	//(1 = left, 2 = top, 3 = right, 4 = bottom)
-	int door_side;
+
+
+//DESCRIPTION: recursively create all the rooms
+//INPUT: the x, y, width, and height of the current room to be made
+//EFFECT: creates given room, and recurses to make the next door(s) and room(s)
+//OUTPUT: none
+void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
+{
+
+	//first, add the given room to the map
+	insert_room(room_x, room_y, room_width, room_height);
+
+	//recursive base case - if there's no space left, return
+	if(!valid_pos_remains())
+		return;
+
+	//the size of the room being generated
+	int new_room_width = ROOM_WIDTH;
+	int new_room_height = ROOM_HEIGHT;
+	//the number of valid rooms generated (later used to pick one randomly)
+	int num_valid_rooms = 0;
+
+	//a vector to hold the valid doors - which hold valid rooms - generated
+	std::vector<Door_Node> valid_doors;
+	valid_doors.reserve((new_room_width*2) + (new_room_height*2)); //reserve space
+
+	//check the left side of the previous room for valid door placements
+	for (int i = room_y; i < room_y + room_height; ++i)
+	{
+		//the x and y of the current door being generated
+		int door_x = room_x -1;
+		int door_y = i;
+
+		if (tile_empty(door_x, door_y))
+		{
+			//the new door
+			Door_Node * new_door = new Door_Node(door_x, door_y);
+
+			//generate valid rooms
+			int new_room_x = door_x - new_room_width;
+			int new_room_y;
+			//loop through possible rooms
+			for (int j = door_y - (new_room_height-1); j <= door_y; ++j)
+			{
+				new_room_y = j;
+				//if it's a valid room, add it
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+				{
+					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
+					num_valid_rooms += 1;
+				}
+			}
+			
+			//if the door has generated valid rooms, it's good
+			//otherwise, delete it
+			if (new_door->has_rooms())
+				valid_doors.push_back(*new_door);
+			else
+				delete new_door;
+
+		} //end if
+
+	} //end for
+
+	
+	//check the top side of the previous room for valid door placements
+	for (int i = room_x; i < room_x + room_width; ++i)
+	{
+		//the x and y of the current door being generated
+		int door_x = i;
+		int door_y = room_y-1;
+
+		if (tile_empty(door_x, door_y))
+		{
+			//the new door
+			Door_Node * new_door = new Door_Node(door_x, door_y);
+
+			//generate valid rooms
+			int new_room_x;
+			int new_room_y = door_y - new_room_height;
+			//loop through possible rooms
+			for (int j = door_x - (new_room_width-1); j <= door_x; ++j)
+			{
+				new_room_x = j;
+				//if it's a valid room, add it
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+				{
+					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
+					++num_valid_rooms;
+				}
+			}
+
+			//if the door has generated valid rooms, it's good
+			//otherwise, delete it
+			if (new_door->has_rooms())
+				valid_doors.push_back(*new_door);
+			else
+				delete new_door;
+
+		} //end if
+	} //end for
+
+	//check the right side of the previous room for valid door placements
+	for (int i = room_y; i < room_y + room_height; ++i)
+	{
+		//the x and y of the current door being generated
+		int door_x = room_x + room_width;
+		int door_y = i;
+
+		if (tile_empty(door_x, door_y))
+		{
+			//the new door
+			Door_Node * new_door = new Door_Node(door_x, door_y);
+
+			//generate valid rooms
+			int new_room_x = door_x + 1;
+			int new_room_y;
+			//loop through possible rooms
+			for (int j = door_y - (new_room_height-1); j <= door_y; ++j)
+			{
+				new_room_y = j;
+				//if it's a valid room, add it
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+				{
+					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
+					++num_valid_rooms;
+				}
+			}
+			
+			//if the door has generated valid rooms, it's good
+			//otherwise, delete it
+			if (new_door->has_rooms())
+				valid_doors.push_back(*new_door);
+			else
+				delete new_door;
+
+		} //end if
+	} //end for
+
+	//check the bottom side of the previous room for valid door placements
+	for (int i = room_x; i < room_x + room_width; ++i)
+	{
+		//the x and y of the current door being generated
+		int door_x = i;
+		int door_y = room_y + room_height;
+
+		if (tile_empty(door_x, door_y))
+		{
+			//the new door
+			Door_Node * new_door = new Door_Node(door_x, door_y);
+
+			//generate valid rooms
+			int new_room_x;
+			int new_room_y = door_y + 1;
+			//loop throug possible rooms
+			for (int j = door_x - (new_room_width-1); j <= door_x; ++j)
+			{
+				new_room_x = j;
+				//if it's a valid room, add it
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+				{
+					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
+					++num_valid_rooms;
+				}
+			}
+
+			//if the door has valid rooms it's good
+			//otherwise, delete it
+			if (new_door->has_rooms())
+				valid_doors.push_back(*new_door);
+			else
+				delete new_door;
+
+		} //end if
+	} //end for
+
+	//at this point, we have all the valid doors and rooms
+	//now to randomly pick one (or some)
+	
 	//generate random seed
 	srand(time(NULL));
 
-	//insert the room into the map
-	insert_room(room_x_pos, room_y_pos, width, height); 
+	int chosen_room = rand() % num_valid_rooms + 1;
+	int chosen_door = 0;
 
-	//check if the map is full, and if so, return
-	if(!valid_pos_remains()) //TODO
-		return;
+	//having generated a random choice, access it
+	while (chosen_room > valid_doors[chosen_door].num_of_rooms())
+	{
+		chosen_room -= valid_doors[chosen_door].num_of_rooms();
+		++chosen_door;
+	}
 
-	//the currently generated room is valid unless set otherwise
-	bool current_pos_valid = true;
+	Room_Node * next_room = new Room_Node(valid_doors[chosen_door].get_room(chosen_room-1));
 
-	//loop until a next door and room are succesfully prepared
-	do {
-		//choose a random tile for a door to be placed between 1 and 4
-		door_side = rand() % 4 + 1;
+	//now recurse with the chosen door/room combo(s)
+	create_rooms(next_room->get_x(), next_room->get_y(), next_room->get_width(), next_room->get_height());
+	
+	//delete the memory used to generate the doors and rooms
+	for (int i = 0; i < valid_doors.size(); ++i)
+	{
+		delete &valid_doors[i];
+	}
 
-		//if door_side = 1, door is on the left side
-		if (door_side == 1) {
-			door_x_pos = room_x_pos - 1;
-			door_y_pos = rand() % height + room_y_pos;
-		} else 
-		//if door_side = 2, door is on the top side
-		if (door_side == 2) {
-			door_x_pos = rand() % room_x_pos + width;
-			door_y_pos = room_y_pos - 1;
-
-		} else
-		//if door_side = 3, door is on the right side
-		if (door_side == 3) {
-			door_x_pos = room_x_pos + height;
-			door_y_pos = rand() room_y_pos + height;
-		} else
-		//if door_side = 4, door is on the bottom side
-		if (door_side == 4) {
-			door_x_pos = room_x_pos + width;
-			door_y_pos = room_y_pos +height;
-
-		}
-
-		//determine the coordinates of the next room to be made
-		//if a valid position is found, set current_pos_valid to true
-		//if a valid position isn't found, loop
-		room_x_pos = gen_room_x(door_side, door_x_pos);
-		room_y_pos = gen_room_y(door_side, door_y_pos);
-
-	} while(!current_pos_valid);
-
-	//once out of the loop, that means a valid door and room position were found
-	//time to create the door, and loop again to create the next room
-	insert_door(door_x_pos, door_y_pos);
-	//next recursive step
-	create_rooms(room_x_pos, room_y_pos, ROOM_SIZE, ROOM_SIZE, door_side);
+	delete &valid_doors;
 }
-
 
 
 //add the tiles for a single room on the map
 void Map::insert_room(int x_pos, int y_pos, int width, int height)
 {
-	for (int i = x_pos, i < x_pos+width; ++i)
+	for (int i = x_pos; i < x_pos + width; ++i)
 	{
-		for (int j = y_pos, j < y_pos+height; ++i)
+		for (int j = y_pos; j < y_pos + height; ++i)
 		{
 		//add a floor tile for each space in the room
-		map_tiles[i][j] = new floor_tile();
+		map_tiles[i][j] = new Floor_Tile();
 
 		}
 	}
 }
 
 
-
-//add a door tile to the given position
-void Map::insert_door(int x_pos, int y_pos)
+//DESCRIPTION: chceks whether the given space on the map has a tile or not
+//INPUT: the x and y of the tile to check
+//EFFECT: none
+//OUTPUT: true or false
+bool Map::tile_empty(int tile_x, int tile_y)
 {
-	map_tiles[x_pos][y_pos] = new door_tile();
+	return true;
+	//TODO
 }
 
 
 
-//find a valid x-position for the next room to be made.
-//if a valid position isn't found, set current_pos_valid to false
-int Map::gen_room_x(int door_side, int door_x)
+//DESCRIPTION: checks whether the given room coordinates/size constitues a valid room placement
+//INPUT: the x, y, width, and height of a room to check
+//EFFECT: none
+//OUTPUT: true or false
+bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
-	//room is valid until set otherwise
-	bool room_valid = true;
-	//loop until a valid room is found. If there aren't any, set current_pos_valid to false, and return -1
-	do {
-		//the placement of the room depends on the direction of the door
-		//(1 = left, 2 = top, 3 = right, 4 = bottom)
+	return true;
+	//TODO
+}
 
-		if (door_side == 1) {
-			//door on the left side, x position is fixed
-			return door_x - ROOM_SIZE;		
-		} else 
-		if (door_side == 2) {
-			//door on the top side, room-x can been door-x +/- (room_size-1)
-			return (rand() % ((ROOM_SIZE * 2)-1)) + door_x - (ROOM_SIZE-1);
-		} else
-		if (door_side == 3) {
-			//door on the left side, x position if fixed
-			return door_x + 1;
-		} else
-		if (door_side == 4) {
-			//door on the bottom side, same equation as top side
-			return (rand() % ((ROOM_SIZE * 2)-1)) + door_x - (ROOM_SIZE-1);
-		}
 
-		//Check the validity of the given room coordinates
-		//TODO
-
-	} while (!room_valid);
+//DESCRIPTION: checks whether there's space remaining on the map to add a valid room
+//INPUT: none
+//EFFECT: none
+//OUTPUT: true or false
+bool Map:: valid_pos_remains()
+{
+	return true;
+	//TODO
 }

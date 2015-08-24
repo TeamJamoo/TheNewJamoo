@@ -1,21 +1,31 @@
-<<<<<<< HEAD
-main() {
-
-}
-=======
 //Author: Richard Holgate
-//Last Updated: 7/31/2015
+//Last Updated: 8/22/2015
 
-//setup function - create the basic necessities for the game and set them up
-void Game:setup() {
+#include "Game.h"
+
+main() {
+	//Create Game and initialize
+	Game * game = new Game();
+	//setup the game
+	game->setup();
+}
+
+
+//DESCRIPTION: setup the game
+//INPUT: none
+//EFFECT: the game is setup and ready to run
+//OUTPUT: none
+void Game::setup() {
 	//create a map
 	gameMap = new Map();
 }
 
-main() {
-	//Create Game and initialize
-	Game game = new Game();
-	//setup the game
-	game.setup();
+
+//DESCRIPTION: display the game board
+//INPUT: none
+//EFFECT: none
+//OUTPUT: none
+void Game::display()
+{
+	//TODO
 }
->>>>>>> 3ed45f04ace8fb4c39fbe76dc30a7cab00cf1045
