@@ -1,11 +1,12 @@
 //Author: Richard Holgate
-//Last Updated: 8/22/2015 by Richard Holgate
+//Last Updated: 8/28/2015 by Richard Holgate
 
 #include "Map.h"
 #include "Tile.h"
 #include "Floor_Tile.h"
 #include "Door_Node.h"
 #include <stdlib.h> //rand and srand
+#include <iostream> //cout and cin
 #include <time.h> //time
 #include <vector> //vector<class_type>
 
@@ -22,11 +23,13 @@
 //OUTPUT: none
 void Map::generate_map(int width, int height)
 {
+	map_width = width;
+	map_height = height;
 	//create empty map
-	map_tiles = new Tile**[width];
-	for (int i = 0; i < width; ++i)
+	map_tiles = new Tile**[map_width];
+	for (int i = 0; i < map_width; ++i)
 	{
-		map_tiles[i] = new Tile*[height];
+		map_tiles[i] = new Tile*[map_height];
 	}
 
 	//create the first room with default beginning coordinates
@@ -45,14 +48,11 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 	//first, add the given room to the map
 	insert_room(room_x, room_y, room_width, room_height);
 
-	//recursive base case - if there's no space left, return
-	if(!valid_pos_remains())
-		return;
-
 	//the size of the room being generated
 	int new_room_width = ROOM_WIDTH;
 	int new_room_height = ROOM_HEIGHT;
 	//the number of valid rooms generated (later used to pick one randomly)
+	//if num_valid_rooms = 0 at the end, there's no valid rooms left, and return
 	int num_valid_rooms = 0;
 
 	//a vector to hold the valid doors - which hold valid rooms - generated
@@ -209,6 +209,10 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 		} //end if
 	} //end for
 
+	//if there were no valid rooms generated, then the base case is triggered, and the function returns
+	if (num_valid_rooms == 0)
+		return;
+
 	//at this point, we have all the valid doors and rooms
 	//now to randomly pick one (or some)
 	
@@ -245,7 +249,7 @@ void Map::insert_room(int x_pos, int y_pos, int width, int height)
 {
 	for (int i = x_pos; i < x_pos + width; ++i)
 	{
-		for (int j = y_pos; j < y_pos + height; ++i)
+		for (int j = y_pos; j < y_pos + height; ++j)
 		{
 		//add a floor tile for each space in the room
 		map_tiles[i][j] = new Floor_Tile();
@@ -255,14 +259,19 @@ void Map::insert_room(int x_pos, int y_pos, int width, int height)
 }
 
 
+
+//DESCRIPTION: return a randomly chosen 
+
 //DESCRIPTION: chceks whether the given space on the map has a tile or not
 //INPUT: the x and y of the tile to check
 //EFFECT: none
 //OUTPUT: true or false
 bool Map::tile_empty(int tile_x, int tile_y)
 {
-	return true;
-	//TODO
+	if (map_tiles[tile_x][tile_y] == NULL)	
+		return true;
+	else
+		return false;
 }
 
 
@@ -273,17 +282,39 @@ bool Map::tile_empty(int tile_x, int tile_y)
 //OUTPUT: true or false
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
+	//loop through each tile the room will occupy to see if it's empty
+	for (int i = room_y; i < room_y + room_height; ++i)
+       	{
+		for (int j = room_x; j < room_x + room_width; ++j)
+		{
+			//if it's not empty, the room isn't valid
+			if (map_tiles[j][i] != NULL)
+				return false;
+		}
+	}
+	//if all the tiles are empty, return true
 	return true;
-	//TODO
 }
 
 
-//DESCRIPTION: checks whether there's space remaining on the map to add a valid room
+
+//DESCRIPTION: displays the map
 //INPUT: none
-//EFFECT: none
-//OUTPUT: true or false
-bool Map:: valid_pos_remains()
+//EFFECT: displays the map in std-out
+//OUTPUT: none
+void Map::display()
 {
-	return true;
-	//TODO
+	//loop through each tile and display X or O
+	for (int i = 0; i < map_height; ++i)
+	{
+		for (int j = 0; j < map_width; ++j)
+		{
+			if (j == map_height)
+				std::cout << "\n";
+			if (map_tiles[j][i] != NULL)
+				std::cout << "X";
+			else
+				std::cout << "O";
+		}
+	}
 }

@@ -1,7 +1,11 @@
 //Author: Richard Holgate
-//Last Updated: 8/22/2015
+//Last Updated: 8/28/2015 by Richard Holgate
 
 #include "Game.h"
+
+//the size of the map
+#define MAP_WIDTH 50
+#define MAP_HEIGHT 50
 
 main() {
 	//Create Game and initialize
@@ -17,15 +21,8 @@ main() {
 //OUTPUT: none
 void Game::setup() {
 	//create a map
-	gameMap = new Map();
-}
-
-
-//DESCRIPTION: display the game board
-//INPUT: none
-//EFFECT: none
-//OUTPUT: none
-void Game::display()
-{
-	//TODO
+	game_map = new Map();
+	//generate it
+	game_map->generate_map(MAP_WIDTH, MAP_HEIGHT);
+	game_map->display();
 }
