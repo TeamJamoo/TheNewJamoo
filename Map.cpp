@@ -223,13 +223,13 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 	int chosen_door = 0;
 
 	//having generated a random choice, access it
-	while (chosen_room > valid_doors[chosen_door].num_of_rooms())
+	while (chosen_room > valid_doors.at(chosen_door).num_of_rooms())
 	{
-		chosen_room -= valid_doors[chosen_door].num_of_rooms();
+		chosen_room -= valid_doors.at(chosen_door).num_of_rooms();
 		++chosen_door;
 	}
 
-	Room_Node * next_room = new Room_Node(valid_doors[chosen_door].get_room(chosen_room-1));
+	Room_Node * next_room = new Room_Node(valid_doors.at(chosen_door).get_room(chosen_room-1));
 
 	//now recurse with the chosen door/room combo(s)
 	create_rooms(next_room->get_x(), next_room->get_y(), next_room->get_width(), next_room->get_height());
@@ -237,10 +237,10 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 	//delete the memory used to generate the doors and rooms
 	for (int i = 0; i < valid_doors.size(); ++i)
 	{
-		delete &valid_doors[i];
+		delete &valid_doors.at(i);
 	}
 
-	delete &valid_doors;
+//	delete &valid_doors;
 }
 
 
@@ -282,6 +282,12 @@ bool Map::tile_empty(int tile_x, int tile_y)
 //OUTPUT: true or false
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
+	//check if width and height are valid integers
+	if (room_x < 0 || room_x > map_width)
+		return false;
+	if (room_y < 0 || room_y > map_height)
+		return false;		
+
 	//loop through each tile the room will occupy to see if it's empty
 	for (int i = room_y; i < room_y + room_height; ++i)
        	{
