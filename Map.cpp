@@ -32,6 +32,15 @@ void Map::generate_map(int width, int height)
 		map_tiles[i] = new Tile*[map_height];
 	}
 
+	//initialize all the pointers to null
+	for (int i = 0; i < map_width; ++i)
+	{
+		for (int j = 0; j < map_height; ++j)
+		{
+			map_tiles[i][j] = NULL;
+		}
+
+	}
 	//create the first room with default beginning coordinates
 	create_rooms(1, 1, ROOM_WIDTH, ROOM_HEIGHT);
 }
