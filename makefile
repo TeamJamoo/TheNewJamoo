@@ -1,11 +1,11 @@
-IDIR =include
 CC=g++
 CFLAGS=-I$(IDIR)
+LDFLAGS=
 
-ODIR=obj
+ODIR = obj
+SDIR = src
+IDIR = include
 
-LIBS=
-SDIR =src
 _SRCS = Door_Node.cpp Floor_Tile.cpp Game.cpp map.cpp Room_Node.cpp
 SRCS = $(patsubst %,$(SDIR)/%,$(_SRCS))
 
@@ -17,11 +17,11 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 jamoo: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) $(LDFLAGS) -o $@ $<
 
 
 $(OBJ): $(SRCS) $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -o $@ -c $< 
 
 .PHONY: clean
 
