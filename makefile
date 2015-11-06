@@ -1,26 +1,21 @@
 CC=g++
-CFLAGS=-I$(IDIR)
+CFLAGS=-I $(IDIR)
 LDFLAGS=
 
 ODIR = obj
 SDIR = src
 IDIR = include
 
-_SRCS = Door_Node.cpp Floor_Tile.cpp Game.cpp map.cpp Room_Node.cpp
-SRCS = $(patsubst %,$(SDIR)/%,$(_SRCS))
-
-_DEPS = Door_Node.hpp Floor_Tile.hpp Game.hpp map.hpp Room_Node.hpp Tile.hpp
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
-
-_OBJ = Door_Node.o Floor_Tile.o Game.o map.o Room_Node.o Tile.o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+SRCS = Door_Node.cpp Floor_Tile.cpp Game.cpp Map.cpp Room_Node.cpp
+DEPS = Door_Node.hpp Floor_Tile.hpp Game.hpp Map.hpp Room_Node.hpp Tile.hpp
+OBJS = Door_Node.o   Floor_Tile.o   Game.o   Map.o   Room_Node.o
 
 
-jamoo: $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $<
+jamoo: $(OBJS)
+	$(CC) $(LDFLAGS) -o jamoo $(OBJS)
 
 
-$(OBJ): $(SRCS) $(DEPS)
+%.o: %.cpp $(DEPS)
 	$(CC) $(CFLAGS) -o $@ -c $< 
 
 .PHONY: clean
