@@ -28,7 +28,8 @@ Door_Node::~Door_Node()
 //OUTPUT: none
 void Door_Node::add_valid_room(int room_x, int room_y, int room_width, int room_height)
 {
-	//TODO
+	Room_Node * room_node = new Room_Node(room_x, room_y, room_width, room_height);
+	valid_rooms.push_back(*room_node);
 }
 
 //DESCRIPTION: return the room at point room_index in the valid_rooms vector

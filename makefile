@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-I $(IDIR)
+CFLAGS=-I $(IDIR) -g
 LDFLAGS=
 
 SDIR = src/
@@ -26,4 +26,4 @@ $(ODIR)%.o : $(SDIR)%.cpp $(DEPS)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ 
+	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ jamoo.exe 

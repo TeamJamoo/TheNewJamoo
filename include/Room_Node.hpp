@@ -7,6 +7,9 @@
 class Room_Node
 {
 	public:
+		Room_Node();
+		Room_Node(int x, int y, int width, int height);
+
 		int get_x();
 		int get_y();
 		int get_width();
