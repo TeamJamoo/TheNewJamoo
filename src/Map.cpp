@@ -75,7 +75,12 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 		int door_x = room_x -1;
 		int door_y = i;
 
-		if (tile_empty(door_x, door_y))
+		//make sure it's within bounds
+		if (door_x < 0 || door_y < 0)
+		{
+			//do nothing
+		}
+		else if (tile_empty(door_x, door_y))
 		{
 			//the new door
 			Door_Node * new_door = new Door_Node(door_x, door_y);
@@ -267,10 +272,6 @@ void Map::insert_room(int x_pos, int y_pos, int width, int height)
 	}
 }
 
-
-
-//DESCRIPTION: return a randomly chosen 
-
 //DESCRIPTION: chceks whether the given space on the map has a tile or not
 //INPUT: the x and y of the tile to check
 //EFFECT: none
@@ -292,9 +293,9 @@ bool Map::tile_empty(int tile_x, int tile_y)
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
 	//check if width and height are valid integers
-	if (room_x < 0 || room_x > map_width)
+	if (room_x < 0 || room_x+room_width >= map_width)
 		return false;
-	if (room_y < 0 || room_y > map_height)
+	if (room_y < 0 || room_y+room_height >= map_height)
 		return false;		
 
 	//loop through each tile the room will occupy to see if it's empty
@@ -324,7 +325,7 @@ void Map::display()
 	{
 		for (int j = 0; j < map_width; ++j)
 		{
-			if (j == map_height)
+			if (j == 0)
 				std::cout << "\n";
 			if (map_tiles[j][i] != NULL)
 				std::cout << "X";
