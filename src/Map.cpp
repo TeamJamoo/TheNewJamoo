@@ -99,7 +99,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 					num_valid_rooms += 1;
 				}
 			}
-			
+
 			//if the door has generated valid rooms, it's good
 			//otherwise, delete it
 			if (new_door->has_rooms())
@@ -111,7 +111,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 
 	} //end for
 
-	
+
 	//check the top side of the previous room for valid door placements
 	for (int i = room_x; i < room_x + room_width; ++i)
 	{
@@ -175,7 +175,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 					++num_valid_rooms;
 				}
 			}
-			
+
 			//if the door has generated valid rooms, it's good
 			//otherwise, delete it
 			if (new_door->has_rooms())
@@ -229,14 +229,14 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 
 	//at this point, we have all the valid doors and rooms
 	//now to randomly pick one (or some)
-	
+
 	//generate random seed
 	srand(time(NULL));
 
 	int chosen_room = rand() % num_valid_rooms + 1;
 	int chosen_door = 0;
 
-	//having generated a random choice, access it
+	// having generated a random choice, access it
 	while (chosen_room > valid_doors.at(chosen_door).num_of_rooms())
 	{
 		chosen_room -= valid_doors.at(chosen_door).num_of_rooms();
@@ -247,14 +247,14 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 
 	//now recurse with the chosen door/room combo(s)
 	create_rooms(next_room->get_x(), next_room->get_y(), next_room->get_width(), next_room->get_height());
-	
-	//delete the memory used to generate the doors and rooms
-	for (int i = 0; i < valid_doors.size(); ++i)
-	{
-		delete &valid_doors.at(i);
-	}
 
-//	delete &valid_doors;
+	//delete the memory used to generate the doors and rooms
+	// for (int i = 0; i < valid_doors.size(); ++i)
+	// {
+	// 	delete &valid_doors.at(i);
+	// }
+	//
+	// delete &valid_doors;
 }
 
 
@@ -278,7 +278,7 @@ void Map::insert_room(int x_pos, int y_pos, int width, int height)
 //OUTPUT: true or false
 bool Map::tile_empty(int tile_x, int tile_y)
 {
-	if (map_tiles[tile_x][tile_y] == NULL)	
+	if (map_tiles[tile_x][tile_y] == NULL)
 		return true;
 	else
 		return false;
@@ -296,11 +296,11 @@ bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 	if (room_x < 0 || room_x+room_width >= map_width)
 		return false;
 	if (room_y < 0 || room_y+room_height >= map_height)
-		return false;		
+		return false;
 
 	//loop through each tile the room will occupy to see if it's empty
 	for (int i = room_y; i < room_y + room_height; ++i)
-       	{
+  {
 		for (int j = room_x; j < room_x + room_width; ++j)
 		{
 			//if it's not empty, the room isn't valid
@@ -328,9 +328,9 @@ void Map::display()
 			if (j == 0)
 				std::cout << "\n";
 			if (map_tiles[j][i] != NULL)
-				std::cout << "X";
+				std::cout << "\033[36m" << "X";
 			else
-				std::cout << "O";
+				std::cout << "\x1b[31m" << "O";
 		}
 	}
 }

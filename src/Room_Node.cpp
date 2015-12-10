@@ -38,7 +38,7 @@ int Room_Node::get_x()
 //OUTPUT: the y value of the room_node
 int Room_Node::get_y()
 {
-	return room_x;
+	return room_y;
 }
 
 

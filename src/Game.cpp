@@ -12,7 +12,7 @@ int main() {
 	Game * game = new Game();
 	//setup the game
 	game->setup();
-	
+
 	return 0;
 }
 
