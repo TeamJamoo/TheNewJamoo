@@ -11,8 +11,8 @@
 #include <vector> //vector<class_type>
 
 //default room size (until made random later
-#define ROOM_WIDTH 3
-#define ROOM_HEIGHT 3
+#define ROOM_WIDTH 5
+#define ROOM_HEIGHT 10
 //TODO - eventually completely randomize
 
 
@@ -292,6 +292,10 @@ bool Map::tile_empty(int tile_x, int tile_y)
 //OUTPUT: true or false
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
+	room_x -= 1;
+	room_y -= 1;
+	room_width += 1;
+	room_height += 1;
 	//check if width and height are valid integers
 	if (room_x < 0 || room_x+room_width >= map_width)
 		return false;
@@ -328,7 +332,7 @@ void Map::display()
 			if (j == 0)
 				std::cout << "\n";
 			if (map_tiles[j][i] != NULL)
-				std::cout << "\033[36m" << "X";
+				std::cout << "\033[36m" << " ";
 			else
 				std::cout << "\x1b[31m" << "O";
 		}
