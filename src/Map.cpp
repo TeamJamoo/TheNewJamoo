@@ -11,8 +11,8 @@
 #include <vector> //vector<class_type>
 
 //default room size (until made random later
-#define ROOM_WIDTH 5
-#define ROOM_HEIGHT 10
+#define ROOM_WIDTH 3
+#define ROOM_HEIGHT 3
 //TODO - eventually completely randomize
 
 
@@ -93,7 +93,8 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_y = j;
 				//if it's a valid room, add it
-				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
+				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					num_valid_rooms += 1;
@@ -132,7 +133,8 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_x = j;
 				//if it's a valid room, add it
-				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
+				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -169,7 +171,8 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_y = j;
 				//if it's a valid room, add it
-				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
+				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -206,7 +209,8 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_x = j;
 				//if it's a valid room, add it
-				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
+                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
+				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -304,10 +308,10 @@ bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 
 	//loop through each tile the room will occupy to see if it's empty
 	for (int i = room_y; i < room_y + room_height; ++i)
-  {
+        {
 		for (int j = room_x; j < room_x + room_width; ++j)
 		{
-			//if it's not empty, the room isn't valid
+			//if it's empty, the room isn't valid
 			if (map_tiles[j][i] != NULL)
 				return false;
 		}
@@ -332,7 +336,7 @@ void Map::display()
 			if (j == 0)
 				std::cout << "\n";
 			if (map_tiles[j][i] != NULL)
-				std::cout << "\033[36m" << " ";
+				std::cout << "\033[36m" << "X";
 			else
 				std::cout << "\x1b[31m" << "O";
 		}
