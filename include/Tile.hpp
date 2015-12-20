@@ -7,10 +7,12 @@
 class Tile
 {
 	public:
+		virtual bool not_valid() =0;
 	protected:
 	private:
 		int x_pos;
 		int y_pos;
+
 };
 
 #endif

@@ -313,9 +313,13 @@ bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 		{
 			//if it's empty, the room isn't valid
 			if (map_tiles[j][i] != NULL)
-				return false;
+			{
+				if(map_tiles[j][i]->not_valid())
+					return false;
+			}
 		}
-	}
+
+		}
 	//if all the tiles are empty, return true
 	return true;
 }

@@ -9,8 +9,10 @@
 class Floor_Tile: public Tile
 {
 	public:
+		bool is_valid();
 	protected:
 	private:
+
 };
 
 
