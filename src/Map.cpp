@@ -296,6 +296,7 @@ bool Map::tile_empty(int tile_x, int tile_y)
 //OUTPUT: true or false
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
+        //include a 1-tile buffer around the room to ensure walls
 	room_x -= 1;
 	room_y -= 1;
 	room_width += 1;
@@ -311,12 +312,9 @@ bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
         {
 		for (int j = room_x; j < room_x + room_width; ++j)
 		{
-			//if it's empty, the room isn't valid
-			if (map_tiles[j][i] != NULL)
-			{
-				if(map_tiles[j][i]->not_valid())
-					return false;
-			}
+			//if the tile may not touch a room, return false
+                        if (!map_tiles[i][j]->may_touch_room())
+                            return false;
 		}
 
 		}

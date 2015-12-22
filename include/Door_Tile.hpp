@@ -8,7 +8,7 @@
 class Door_Tile: public Tile
 {
 	public:
-		bool not_valid();
+		bool may_touch_room();
 	protected:
 	private:
 

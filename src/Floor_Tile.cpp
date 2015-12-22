@@ -1,9 +1,13 @@
 //Author: Richard Holgate
-//Last Edited: 8/24/2015 by Richard Holgate
+//Last Edited: 12/21/2015 by Richard Holgate
 
 #include "Floor_Tile.hpp"
 
-bool Floor_Tile::not_valid()
+//DESCRIPTION: Whether a floor tile may touch a room
+//INPUT: none
+//EFFECTS: none
+//OUTPUT: Whether a foor tile may touch a room (it may not)
+bool Floor_Tile::may_touch_room()
 {
-	return true;
+	return false;
 }

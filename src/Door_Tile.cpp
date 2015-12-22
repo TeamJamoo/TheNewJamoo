@@ -1,9 +1,13 @@
 //Author: Liam Kavanagh
-//Last Updated: 12/18/2015 by Liam Kavanagh
+//Last Updated: 12/21/2015 by Richard Holgate
 
 #include "Door_Tile.hpp"
 
-bool Door_Tile::not_valid()
+//DESCRIPTION: whether a door tile may touch a room
+//INPUT: none
+//EFFECTS: none
+//OUTPUT: whether a door tile may touch a room (it may)
+bool Door_Tile::may_touch_room()
 {
-	return false;
+	return true;
 }
