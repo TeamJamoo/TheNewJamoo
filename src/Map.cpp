@@ -1,8 +1,9 @@
 //Author: Richard Holgate
-//Last Updated: 8/28/2015 by Richard Holgate
+//Last Updated: 2/22/2016 by Richard Holgate
 
 #include "Map.hpp"
 #include "Tile.hpp"
+#include "Wall_Tile.hpp"
 #include "Floor_Tile.hpp"
 #include "Door_Node.hpp"
 #include <stdlib.h> //rand and srand
@@ -37,7 +38,7 @@ void Map::generate_map(int width, int height)
 	{
 		for (int j = 0; j < map_height; ++j)
 		{
-			map_tiles[i][j] = NULL;
+			map_tiles[i][j] = new Wall_Tile;
 		}
 
 	}
