@@ -94,8 +94,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_y = j;
 				//if it's a valid room, add it
-                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
-				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					num_valid_rooms += 1;
@@ -134,8 +133,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_x = j;
 				//if it's a valid room, add it
-                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
-				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -172,8 +170,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_y = j;
 				//if it's a valid room, add it
-                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
-				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -210,8 +207,7 @@ void Map::create_rooms(int room_x, int room_y, int room_width, int room_height)
 			{
 				new_room_x = j;
 				//if it's a valid room, add it
-                                //the -1/-1/+1/+1 make sure that there is a one-tile buffer around the room (walls)
-				if (room_is_valid(new_room_x-1, new_room_y-1, new_room_width+1, new_room_height+1))
+				if (room_is_valid(new_room_x, new_room_y, new_room_width, new_room_height))
 				{
 					new_door->add_valid_room(new_room_x, new_room_y, new_room_width, new_room_height);
 					++num_valid_rooms;
@@ -298,10 +294,10 @@ bool Map::tile_empty(int tile_x, int tile_y)
 bool Map::room_is_valid(int room_x, int room_y, int room_width, int room_height)
 {
         //include a 1-tile buffer around the room to ensure walls
-	room_x -= 1;
+	/*room_x -= 1;
 	room_y -= 1;
 	room_width += 1;
-	room_height += 1;
+	room_height += 1;*/
 	//check if width and height are valid integers
 	if (room_x < 0 || room_x+room_width >= map_width)
 		return false;
@@ -338,10 +334,18 @@ void Map::display()
 		{
 			if (j == 0)
 				std::cout << "\n";
-			if (map_tiles[j][i] != NULL)
+                        //Floors are red
+                        //Walls are blue
+                        //Use dynamic casting to check tile type to give it the correct color
+                        Tile * type_check_tile;
+
+                        type_check_tile = dynamic_cast<Floor_Tile*>(map_tiles[j][i]);
+
+			if (type_check_tile != NULL)                 //check if the type_check_tile isn't NULL (and thus is of type Floor_Tile)
 				std::cout << "\033[36m" << "X";
 			else
 				std::cout << "\x1b[31m" << "O";
 		}
 	}
+        std::cout << "\n";
 }

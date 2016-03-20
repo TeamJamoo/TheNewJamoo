@@ -12,7 +12,7 @@ SRCS  = $(addprefix $(SDIR), $(_SRCS))
 _DEPS = Door_Node.hpp Door_Tile.hpp Floor_Tile.hpp Wall_Tile.hpp Game.hpp Map.hpp Room_Node.hpp Tile.hpp
 DEPS  = $(addprefix $(IDIR), $(_DEPS))
 
-_OBJS = Door_Node.o Door_Tile.o Floor_Tile.o Game.o Map.o Room_Node.o
+_OBJS = Door_Node.o   Door_Tile.o   Floor_Tile.o   Wall_Tile.o   Game.o   Map.o   Room_Node.o
 OBJS  = $(addprefix $(ODIR), $(_OBJS))
 
 
